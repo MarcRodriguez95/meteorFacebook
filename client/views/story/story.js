@@ -14,6 +14,7 @@ Template.story.events({
     'click .delete-story':function(e){
       e.preventDefault();
       var story = Blaze.getData(e.currentTarget);
+      //console.log(story);
       Stories.remove(story._id);
     },
     'submit .comment-story':function(event){
@@ -24,39 +25,42 @@ Template.story.events({
 
       var story = Blaze.getData(event.currentTarget);
 
-      //Añade a la colección el atributo "Comment"
+      //Add in Collection Stories a nes atribue, "Comment"
       if (commentText){
-        //Usuario del comentario
+        //El creador del commentario
         var userOwner = Meteor.user();
+        console.log(userOwner);
         Stories.update({_id: story._id}, {$push:{comments: {
-            commentText: commentText,
-            commentDate: new Date(),
-            owner: Meteor.userId(),
-            idStory : story._id,
-            userImageComment : userOwner.profile.picture.thumbnail,
-            creatorNameComment : userOwner.profile.name.first,
-			username : userOwner.profile.login.username
+                                                   commentText: commentText,
+                                                   commentDate: new Date(),
+                                                   owner: Meteor.userId(),
+                                                   idStory : story._id,
+                                                   userImageComment : userOwner.profile.picture.thumbnail,
+                                                   creatorNameComment : userOwner.profile.name.first,
+                                                   username : userOwner.profile.login.username
 
-         }}});
-        //ordenar los comentarios de las publicaciones
+
+                                                }}});
+        //for order comments
         Stories.update({_id: story._id},{$push:{comments:{$each:[],$sort: {"commentDate": -1}} }},{'multi':true});
 
       }
       target.text.value = '';
 
     }
-	
+
+
 })
 
 Template.story.helpers({
     status:function(){
         return this.createdFor === this.createdBy;
     },
-	ownerStory:function(){
+    ownerStory:function(){
         return this.createdBy === Meteor.userId();
     },
-	
-	styleLike:function(){
+
+    styleLike:function(){
 
       var liker = Meteor.user();
       var likeData = {name: liker.profile.name.first + " " + liker.profile.name.last};
@@ -67,11 +71,11 @@ Template.story.helpers({
         return true;
       }
     },
-	
-	datestory:function(date) {
+
+    datestory:function(date) {
       return moment(date).format('MM-DD-YYYY HH:mm');
     },
-	
+
     likeCount:function(storyId){
         var story = Stories.findOne({_id: storyId});
         var likes = story.likes;
@@ -103,25 +107,30 @@ Template.story.helpers({
         }
 
     }
+
 })
 
-Template.commentUsuario.events({
+Template.commentTemaplte.events({
   'click .delete-comment':function(e){
     e.preventDefault();
     var comment = Blaze.getData(e.currentTarget);
+    console.log("hola");
     Stories.update({_id: comment.idStory}, {$pull: { comments: {
-        commentText: comment.commentText ,
-        commentDate: comment.commentDate,
-        owner: comment.owner,
-        idStory: comment.idStory,
-        userImageComment: comment.userImageComment,
-		CreatorNameComment: comment.creatorNameComment,
-        }}});
+                                                      commentText: comment.commentText ,
+                                                      commentDate: comment.commentDate,
+                                                      owner: comment.owner,
+                                                      idStory: comment.idStory,
+                                                      userImageComment: comment.userImageComment,
+                                                      creatorNameComment: comment.creatorNameComment,
+
+
+
+                                                    }}});
   }
 })
 
-
-Template.commentUsuario.helpers({
+//Need this package meteor add momentjs:moment
+Template.commentTemaplte.helpers({
   dateRefactor:function(date){
 
     return moment(date).format('MM-DD-YYYY HH:mm');
