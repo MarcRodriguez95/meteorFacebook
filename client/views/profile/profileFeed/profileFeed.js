@@ -9,7 +9,6 @@ Template.profileFeed.onCreated(function(){
 
 Template.profileFeed.events({
     'click .new-post':function(e){
-      console.log("hola");
         e.preventDefault();
         var profileUser = Meteor.users.findOne({username:Router.current().params.username});
         var currentUser = Meteor.user();
