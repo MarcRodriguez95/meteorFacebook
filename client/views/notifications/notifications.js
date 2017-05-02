@@ -1,6 +1,8 @@
+
 Template.notifications.onCreated(function(){
 
 })
+
 
 Template.notifications.events({
     'click .accept':function(e){
